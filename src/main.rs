@@ -113,6 +113,10 @@ enum Taxes {
     IncomeTax,
     LucsusTax,
 }
+
+#[derive(Component)]
+struct Movable;
+
 fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -124,15 +128,39 @@ fn setup(
         Mesh2d(meshes.add(Rectangle::default())),
         MeshMaterial2d(materials.add(Color::from(PURPLE))),
         Transform::default().with_scale(Vec3::splat(128.)),
+        Movable,
     ));
+}
+
+fn controls(
+    quadrate: Single<&mut Transform, With<Movable>>,
+    input: Res<ButtonInput<KeyCode>>,
+    time: Res<Time>,
+) {
+    let mut transform = quadrate.into_inner();
+    if input.pressed(KeyCode::KeyA) {
+        transform.translation.x -= 100.0 * time.delta_secs();
+    }
+    if input.pressed(KeyCode::KeyD) {
+        transform.translation.x += 100.0 * time.delta_secs();
+    }
+    if input.pressed(KeyCode::KeyW) {
+        transform.translation.y += 100.0 * time.delta_secs();
+    }
+    if input.pressed(KeyCode::KeyS) {
+        transform.translation.y -= 100.0 * time.delta_secs();
+    }
 }
 fn main() {
     // let mut rng = rand::rng();
     // let value = rng.random_range(2..=12);
     // println!("{value}");
 
-    App::new().add_plugins(DefaultPlugins).add_systems(Startup, setup).run();
-    
+    App::new()
+        .add_plugins(DefaultPlugins)
+        .add_systems(Startup, setup)
+        .add_systems(Update, controls)
+        .run();
 
     let scandic_hotel = Hotel::new(String::from("Scandic"), Hotels::Purple);
     let royal_hotel = Hotel::new(String::from("Royal"), Hotels::Purple);
