@@ -1,3 +1,4 @@
+use bevy::{color::palettes::css::PURPLE, prelude::*};
 use rand::Rng;
 
 const RENEW_MONEY: u32 = 2500;
@@ -112,11 +113,26 @@ enum Taxes {
     IncomeTax,
     LucsusTax,
 }
+fn setup(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
+    commands.spawn(Camera2d);
 
+    commands.spawn((
+        Mesh2d(meshes.add(Rectangle::default())),
+        MeshMaterial2d(materials.add(Color::from(PURPLE))),
+        Transform::default().with_scale(Vec3::splat(128.)),
+    ));
+}
 fn main() {
-    let mut rng = rand::rng();
-    let value = rng.random_range(2..=12);
-    println!("{value}");
+    // let mut rng = rand::rng();
+    // let value = rng.random_range(2..=12);
+    // println!("{value}");
+
+    App::new().add_plugins(DefaultPlugins).add_systems(Startup, setup).run();
+    
 
     let scandic_hotel = Hotel::new(String::from("Scandic"), Hotels::Purple);
     let royal_hotel = Hotel::new(String::from("Royal"), Hotels::Purple);
