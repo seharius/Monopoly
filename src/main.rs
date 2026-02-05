@@ -1,13 +1,26 @@
 use bevy::{color::palettes::css::PURPLE, prelude::*};
 use rand::Rng;
 
-const RENEW_MONEY: u32 = 2500;
-const START_MONEY: u32 = 10000;
+const RENEW_MONEY: i32 = 2500;
+const START_MONEY: i32 = 10000;
 const AREAS_NUM: u8 = 44;
 
+type PlayerId = u8;
+
 struct Player {
+    id: PlayerId,
     area: u8,
-    money: u32,
+    money: i32,
+    is_bankrut: bool,
+}
+
+enum Command {
+    RollDice,
+    BuyProperty,
+    PayRent,
+    ProposeTrade(TradeOffer),
+    AcceptTrade,
+    EndTurn,
 }
 
 impl Player {
@@ -19,6 +32,8 @@ impl Player {
         self.area = area % AREAS_NUM;
     }
 }
+
+
 
 struct Hotel {
     name: String,
